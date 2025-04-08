@@ -76,14 +76,14 @@ export class SapAiCore implements ApiHandler {
 				case "assistant":
 					return {
 						role: "assistant",
-						content: typeof message.content === "string" ? message.content : "",
+						content: message.content,
 						name: message.name,
 						tool_calls: message.tool_calls,
 					}
 				case "tool":
 					return {
 						role: "tool",
-						content: typeof message.content === "string" ? message.content : "",
+						content: message.content,
 						tool_call_id: message.tool_call_id,
 					}
 				case "function":

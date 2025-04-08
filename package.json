@@ -8,7 +8,7 @@
 		"vscode": "^1.84.0"
 	},
 	"author": {
-		"name": "Cline Bot Inc."
+		"name": "Joule Bot Inc."
 	},
 	"license": "Apache-2.0",
 	"publisher": "saoudrizwan",
@@ -94,28 +94,28 @@
 			{
 				"command": "cline.openInNewTab",
 				"title": "Open In New Tab",
-				"category": "Cline"
+				"category": "Joule"
 			},
 			{
 				"command": "cline.dev.createTestTasks",
 				"title": "Create Test Tasks",
-				"category": "Cline",
+				"category": "Joule",
 				"when": "cline.isDevMode"
 			},
 			{
 				"command": "cline.addToChat",
-				"title": "Add to Cline",
-				"category": "Cline"
+				"title": "Add to Joule",
+				"category": "Joule"
 			},
 			{
 				"command": "cline.addTerminalOutputToChat",
-				"title": "Add to Cline",
-				"category": "Cline"
+				"title": "Add to Joule",
+				"category": "Joule"
 			},
 			{
 				"command": "cline.fixWithCline",
-				"title": "Fix with Cline",
-				"category": "Cline"
+				"title": "Fix with Joule",
+				"category": "Joule"
 			}
 		],
 		"menus": {
@@ -277,7 +277,7 @@
 						"Turkish - Türkçe"
 					],
 					"default": "English",
-					"description": "The language that Cline should use for communication."
+					"description": "The language that Joule should use for communication."
 				},
 				"cline.mcpMarketplace.enabled": {
 					"type": "boolean",

@@ -802,10 +802,6 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 						flexDirection: "column",
 						paddingBottom: "10px",
 					}}>
-					{telemetrySetting === "unset" && <TelemetryBanner />}
-
-					{showAnnouncement && <Announcement version={version} hideAnnouncement={hideAnnouncement} />}
-
 					<div style={{ padding: "0 20px", flexShrink: 0 }}>
 						<h2>What can I do for you?</h2>
 						<p>

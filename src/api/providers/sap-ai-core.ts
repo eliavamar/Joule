@@ -2,10 +2,7 @@ import { MessageParam } from "@anthropic-ai/sdk/resources/index.mjs"
 import {
 	AzureOpenAiChatClient,
 	AzureOpenAiChatCompletionRequestMessage,
-	AzureOpenAiChatCompletionRequestMessageContentPartText,
 	AzureOpenAiChatCompletionRequestSystemMessage,
-	AzureOpenAiChatCompletionRequestSystemMessageContentPart,
-	AzureOpenAiChatCompletionRequestToolMessageContentPart,
 	AzureOpenAiChatCompletionRequestUserMessageContentPart,
 } from "@sap-ai-sdk/foundation-models"
 import { ApiHandler } from ".."
@@ -42,7 +39,7 @@ export class SapAiCore implements ApiHandler {
 					// For user messages, handle content parts
 					if (Array.isArray(message.content)) {
 						// Convert content parts to Azure format
-						const aiCoreContent: AzureOpenAiChatCompletionRequestUserMessageContentPart[] = message.content
+						const azureContent: AzureOpenAiChatCompletionRequestUserMessageContentPart[] = message.content
 							.filter((part) => part.type === "text" || part.type === "image_url")
 							.map((part) => {
 								if (part.type === "text") {
@@ -65,16 +62,17 @@ export class SapAiCore implements ApiHandler {
 
 						return {
 							role: "user",
-							content: aiCoreContent,
+							content: azureContent,
+							name: message.name,
+						}
+					} else {
+						// String content
+						return {
+							role: "user",
+							content: message.content || "",
 							name: message.name,
 						}
 					}
-					return {
-						role: "user",
-						content: message.content,
-						name: message.name,
-					}
-
 				case "assistant":
 					return {
 						role: "assistant",
@@ -83,39 +81,22 @@ export class SapAiCore implements ApiHandler {
 						tool_calls: message.tool_calls,
 					}
 				case "tool":
-					if (Array.isArray(message.content)) {
-						const aiCoreContent: AzureOpenAiChatCompletionRequestToolMessageContentPart[] = message.content.map(
-							(part) => {
-								return {
-									type: "text" as const,
-									text: part.text,
-								}
-							},
-						)
-						return {
-							role: "tool",
-							content: aiCoreContent,
-							tool_call_id: message.tool_call_id,
-						}
-					}
 					return {
 						role: "tool",
-						content: message.content,
+						content: typeof message.content === "string" ? message.content : "",
 						tool_call_id: message.tool_call_id,
 					}
-				default:
-					// Default case - handle function and other roles
-					if (message.role === "function") {
-						return {
-							role: "function",
-							content: typeof message.content === "string" ? message.content : "",
-							name: message.name || "function",
-						}
+				case "function":
+					return {
+						role: "function",
+						content: message.content,
+						name: message.name || "function",
 					}
+				default:
 					// For any other roles, convert to system message as fallback
 					return {
 						role: "system",
-						content: `${message.role}: ${typeof message.content === "string" ? message.content : ""}`,
+						content: message.content,
 					}
 			}
 		})
@@ -127,12 +108,15 @@ export class SapAiCore implements ApiHandler {
 		const chatClient = new AzureOpenAiChatClient("gpt-4o")
 		// Convert to OpenAI format first
 		const openAImessages = [...convertToOpenAiMessages(messages)]
-		// Then convert to AICore Azure OpenAI format
-		const aiCoreSystemMessage: AzureOpenAiChatCompletionRequestSystemMessage = { role: "system", content: systemPrompt }
-		const aiCoreMessages = [aiCoreSystemMessage, ...this.convertToAICoreOpenAiMessages(openAImessages)]
-		// Use the AICore Azure-compatible messages
+		// Then convert to Azure OpenAI format
+		const azureSystemMessages: AzureOpenAiChatCompletionRequestSystemMessage = {
+			role: "system",
+			content: systemPrompt,
+		}
+		const azureMessages = [azureSystemMessages, ...this.convertToAICoreOpenAiMessages(openAImessages)]
+		// Use the Azure-compatible messages
 		const response = await chatClient.stream({
-			messages: aiCoreMessages,
+			messages: azureMessages,
 		})
 
 		for await (const chunk of response.stream) {
@@ -155,7 +139,14 @@ export class SapAiCore implements ApiHandler {
 	}
 
 	async mockAiCoreEnvVariable(): Promise<void> {
-		const aiCoreServiceCredentials = {}
+		const aiCoreServiceCredentials = {
+			clientid: "clientid",
+			clientsecret: "clientsecret",
+			url: "https://.authentication.sap.hana.ondemand.com",
+			serviceurls: {
+				AI_API_URL: "https://aws.ml.hana.ondemand.com",
+			},
+		}
 		process.env["AICORE_SERVICE_KEY"] = JSON.stringify(aiCoreServiceCredentials)
 	}
 }

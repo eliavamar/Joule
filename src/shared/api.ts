@@ -1252,7 +1252,7 @@ export const sapAiCoreModels = {
 	"gpt-4o": {
 		maxTokens: 4096,
 		contextWindow: 128_000,
-		supportsImages: false,
+		supportsImages: true,
 		supportsPromptCache: false,
 		inputPrice: 0.0,
 		outputPrice: 0.0,

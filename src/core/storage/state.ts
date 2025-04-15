@@ -104,7 +104,7 @@ export async function getAllExtensionState(context: vscode.ExtensionContext) {
 		sapAiCoreModelId,
 		sapClientid,
 		sapClientsecret,
-		sapAutoUrl,
+		sapAuthUrl,
 		sapApiUrl,
 		userInfo,
 		previousModeApiProvider,
@@ -174,7 +174,7 @@ export async function getAllExtensionState(context: vscode.ExtensionContext) {
 		getGlobalState(context, "sapAiCoreModelId") as Promise<string | undefined>,
 		getSecret(context, "sapClientid") as Promise<string | undefined>,
 		getSecret(context, "sapClientsecret") as Promise<string | undefined>,
-		getSecret(context, "sapAutoUrl") as Promise<string | undefined>,
+		getSecret(context, "sapAuthUrl") as Promise<string | undefined>,
 		getSecret(context, "sapApiUrl") as Promise<string | undefined>,
 		getGlobalState(context, "userInfo") as Promise<UserInfo | undefined>,
 		getGlobalState(context, "previousModeApiProvider") as Promise<ApiProvider | undefined>,
@@ -280,7 +280,7 @@ export async function getAllExtensionState(context: vscode.ExtensionContext) {
 			sapAiCoreModelId,
 			sapClientid,
 			sapClientsecret,
-			sapAutoUrl,
+			sapAuthUrl,
 			sapApiUrl,
 			liteLlmApiKey,
 			asksageApiKey,
@@ -353,7 +353,7 @@ export async function updateApiConfiguration(context: vscode.ExtensionContext, a
 		sapAiCoreModelId,
 		sapClientid,
 		sapClientsecret,
-		sapAutoUrl,
+		sapAuthUrl,
 		sapApiUrl,
 		liteLlmApiKey,
 		qwenApiLine,
@@ -409,7 +409,7 @@ export async function updateApiConfiguration(context: vscode.ExtensionContext, a
 	await updateGlobalState(context, "sapAiCoreModelId", sapAiCoreModelId)
 	await storeSecret(context, "sapClientid", sapClientid)
 	await storeSecret(context, "sapClientsecret", sapClientsecret)
-	await storeSecret(context, "sapAutoUrl", sapAutoUrl)
+	await storeSecret(context, "sapAuthUrl", sapAuthUrl)
 	await storeSecret(context, "sapApiUrl", sapApiUrl)
 	await updateGlobalState(context, "qwenApiLine", qwenApiLine)
 	await updateGlobalState(context, "requestyModelId", requestyModelId)

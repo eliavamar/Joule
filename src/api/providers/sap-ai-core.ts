@@ -142,7 +142,7 @@ export class SapAiCore implements ApiHandler {
 		const aiCoreServiceCredentials = {
 			clientid: this.options.sapClientid,
 			clientsecret: this.options.sapClientsecret,
-			url: this.options.sapAutoUrl,
+			url: this.options.sapAuthUrl,
 			serviceurls: {
 				AI_API_URL: this.options.sapApiUrl,
 			},

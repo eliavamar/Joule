@@ -21,7 +21,7 @@ export type SecretKey =
 	| "sambanovaApiKey"
 	| "sapClientid"
 	| "sapClientsecret"
-	| "sapAutoUrl"
+	| "sapAuthUrl"
 	| "sapApiUrl"
 export type GlobalStateKey =
 	| "apiProvider"

@@ -32,7 +32,7 @@ export interface ApiHandlerOptions {
 	sapAiCoreModelId?: string
 	sapClientid?: string
 	sapClientsecret?: string
-	sapAutoUrl?: string
+	sapAuthUrl?: string
 	sapApiUrl?: string
 	liteLlmApiKey?: string
 	anthropicBaseUrl?: string

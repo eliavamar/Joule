@@ -1299,11 +1299,11 @@ const ApiOptions = ({ showModelOptions, apiErrorMessage, modelIdErrorMessage, is
 						<span style={{ fontWeight: 500 }}>CLIENT SECRET</span>
 					</VSCodeTextField>
 					<VSCodeTextField
-						value={apiConfiguration?.sapAutoUrl || ""}
+						value={apiConfiguration?.sapAuthUrl || ""}
 						style={{ width: "100%" }}
-						onInput={handleInputChange("sapAutoUrl")}
+						onInput={handleInputChange("sapAuthUrl")}
 						placeholder={"https://.authentication.sap.hana.ondemand.com"}>
-						<span style={{ fontWeight: 500 }}>AUTO URL</span>
+						<span style={{ fontWeight: 500 }}>AUTH URL</span>
 					</VSCodeTextField>
 					<VSCodeTextField
 						value={apiConfiguration?.sapApiUrl || ""}

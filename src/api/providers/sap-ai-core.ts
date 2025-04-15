@@ -17,6 +17,7 @@ export class SapAiCore implements ApiHandler {
 
 	constructor(options: ApiHandlerOptions) {
 		this.options = options
+		this.setupAiCoreEnvVariable()
 	}
 
 	/**
@@ -104,7 +105,6 @@ export class SapAiCore implements ApiHandler {
 
 	@withRetry()
 	async *createMessage(systemPrompt: string, messages: MessageParam[]): ApiStream {
-		await this.mockAiCoreEnvVariable()
 		const chatClient = new AzureOpenAiChatClient("gpt-4o")
 		// Convert to OpenAI format first
 		const openAImessages = [...convertToOpenAiMessages(messages)]
@@ -138,13 +138,13 @@ export class SapAiCore implements ApiHandler {
 		}
 	}
 
-	async mockAiCoreEnvVariable(): Promise<void> {
+	setupAiCoreEnvVariable(): void {
 		const aiCoreServiceCredentials = {
-			clientid: "clientid",
-			clientsecret: "clientsecret",
-			url: "https://.authentication.sap.hana.ondemand.com",
+			clientid: this.options.sapClientid,
+			clientsecret: this.options.sapClientsecret,
+			url: this.options.sapAuthUrl,
 			serviceurls: {
-				AI_API_URL: "https://aws.ml.hana.ondemand.com",
+				AI_API_URL: this.options.sapApiUrl,
 			},
 		}
 		process.env["AICORE_SERVICE_KEY"] = JSON.stringify(aiCoreServiceCredentials)

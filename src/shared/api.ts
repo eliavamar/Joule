@@ -30,6 +30,10 @@ export interface ApiHandlerOptions {
 	liteLlmBaseUrl?: string
 	liteLlmModelId?: string
 	sapAiCoreModelId?: string
+	sapClientid?: string
+	sapClientsecret?: string
+	sapAuthUrl?: string
+	sapApiUrl?: string
 	liteLlmApiKey?: string
 	anthropicBaseUrl?: string
 	openRouterApiKey?: string

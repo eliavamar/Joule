@@ -19,6 +19,10 @@ export type SecretKey =
 	| "asksageApiKey"
 	| "xaiApiKey"
 	| "sambanovaApiKey"
+	| "sapClientid"
+	| "sapClientsecret"
+	| "sapAutoUrl"
+	| "sapApiUrl"
 export type GlobalStateKey =
 	| "apiProvider"
 	| "apiModelId"

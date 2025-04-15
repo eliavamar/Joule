@@ -1,8 +1,8 @@
 {
-	"name": "claude-dev",
+	"name": "joule",
 	"displayName": "Joule",
 	"description": "Autonomous coding agent right in your IDE, capable of creating/editing files, running commands, using the browser, and more with your permission every step of the way.",
-	"version": "3.9.2",
+	"version": "1.0.0",
 	"icon": "assets/icons/icon.png",
 	"engines": {
 		"vscode": "^1.84.0"
@@ -310,12 +310,14 @@
 		"build:webview": "cd webview-ui && npm run build",
 		"test:webview": "cd webview-ui && npm run test",
 		"publish:marketplace": "vsce publish && ovsx publish",
+		"pack": "vsce pack",
 		"publish:marketplace:prerelease": "vsce publish --pre-release && ovsx publish --pre-release",
 		"prepare": "husky",
 		"changeset": "changeset",
 		"version-packages": "changeset version"
 	},
 	"devDependencies": {
+		"@vscode/vsce": "3.3.2",
 		"@sap-ai-sdk/foundation-models": "1.10.0",
 		"@changesets/cli": "^2.27.12",
 		"@types/chai": "^5.0.1",

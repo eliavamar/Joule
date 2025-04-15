@@ -1284,6 +1284,34 @@ const ApiOptions = ({ showModelOptions, apiErrorMessage, modelIdErrorMessage, is
 						placeholder={"e.g. gpt-4"}>
 						<span style={{ fontWeight: 500 }}>Model ID</span>
 					</VSCodeTextField>
+					<VSCodeTextField
+						value={apiConfiguration?.sapClientid || ""}
+						style={{ width: "100%" }}
+						onInput={handleInputChange("sapClientid")}
+						placeholder={"clientid"}>
+						<span style={{ fontWeight: 500 }}>CLIENT ID</span>
+					</VSCodeTextField>
+					<VSCodeTextField
+						value={apiConfiguration?.sapClientsecret || ""}
+						style={{ width: "100%" }}
+						onInput={handleInputChange("sapClientsecret")}
+						placeholder={"clientsecret"}>
+						<span style={{ fontWeight: 500 }}>CLIENT SECRET</span>
+					</VSCodeTextField>
+					<VSCodeTextField
+						value={apiConfiguration?.sapAutoUrl || ""}
+						style={{ width: "100%" }}
+						onInput={handleInputChange("sapAutoUrl")}
+						placeholder={"https://.authentication.sap.hana.ondemand.com"}>
+						<span style={{ fontWeight: 500 }}>AUTO URL</span>
+					</VSCodeTextField>
+					<VSCodeTextField
+						value={apiConfiguration?.sapApiUrl || ""}
+						style={{ width: "100%" }}
+						onInput={handleInputChange("sapApiUrl")}
+						placeholder={"https://aws.ml.hana.ondemand.com"}>
+						<span style={{ fontWeight: 500 }}>API URL</span>
+					</VSCodeTextField>
 				</div>
 			)}
 

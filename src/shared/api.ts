@@ -1261,6 +1261,15 @@ export const sapAiCoreModels = {
 		inputPrice: 0.0,
 		outputPrice: 0.0,
 	},
+	"o3-mini": {
+		maxTokens: 100_000,
+		contextWindow: 200_000,
+		supportsImages: false,
+		supportsPromptCache: true,
+		inputPrice: 0.0,
+		outputPrice: 0.0,
+		cacheReadsPrice: 0.0,
+	},
 }
 // AskSage Models
 // https://docs.asksage.ai/

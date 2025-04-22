@@ -122,15 +122,30 @@ export class SapAiCore implements ApiHandler {
 
 		let response
 		if (model.id === "o3-mini") {
-			response = await chatClient.stream({
-				max_completion_tokens: modelInfo.maxTokens,
-				messages: azureMessages,
-			})
+			response = await chatClient.stream(
+				{
+					max_completion_tokens: modelInfo.maxTokens,
+					messages: azureMessages,
+				},
+				undefined,
+				{
+					params: {
+						"api-version": "2024-12-01-preview",
+					},
+					maxContentLength: modelInfo.contextWindow,
+				},
+			)
 		} else {
-			response = await chatClient.stream({
-				max_tokens: modelInfo.maxTokens,
-				messages: azureMessages,
-			})
+			response = await chatClient.stream(
+				{
+					max_tokens: modelInfo.maxTokens,
+					messages: azureMessages,
+				},
+				undefined,
+				{
+					maxContentLength: modelInfo.contextWindow,
+				},
+			)
 		}
 		// Use the Azure-compatible messages
 

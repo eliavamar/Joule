@@ -4,9 +4,11 @@ import {
 	AzureOpenAiChatCompletionRequestMessage,
 	AzureOpenAiChatCompletionRequestSystemMessage,
 	AzureOpenAiChatCompletionRequestUserMessageContentPart,
+	AzureOpenAiChatCompletionStreamChunkResponse,
+	AzureOpenAiChatCompletionStreamResponse,
 } from "@sap-ai-sdk/foundation-models"
 import { ApiHandler } from ".."
-import { ApiHandlerOptions, ModelInfo, sapAiCoreDefaultModelId, sapAiCoreModels } from "../../shared/api"
+import { ApiHandlerOptions, ModelInfo, sapAiCoreDefaultModelId, SapAiCoreModelId, sapAiCoreModels } from "../../shared/api"
 import { ApiStream } from "../transform/stream"
 import { withRetry } from "../retry"
 import { convertToOpenAiMessages } from "../transform/openai-format"
@@ -105,8 +107,11 @@ export class SapAiCore implements ApiHandler {
 
 	@withRetry()
 	async *createMessage(systemPrompt: string, messages: MessageParam[]): ApiStream {
-		const chatClient = new AzureOpenAiChatClient("gpt-4o")
+		const model = this.getModel()
+		const modelInfo = model.info
+		const chatClient = new AzureOpenAiChatClient(model.id.trim())
 		// Convert to OpenAI format first
+		//'o3-mini'
 		const openAImessages = [...convertToOpenAiMessages(messages)]
 		// Then convert to Azure OpenAI format
 		const azureSystemMessages: AzureOpenAiChatCompletionRequestSystemMessage = {
@@ -114,10 +119,20 @@ export class SapAiCore implements ApiHandler {
 			content: systemPrompt,
 		}
 		const azureMessages = [azureSystemMessages, ...this.convertToAICoreOpenAiMessages(openAImessages)]
+
+		let response
+		if (model.id === "o3-mini") {
+			response = await chatClient.stream({
+				max_completion_tokens: modelInfo.maxTokens,
+				messages: azureMessages,
+			})
+		} else {
+			response = await chatClient.stream({
+				max_tokens: modelInfo.maxTokens,
+				messages: azureMessages,
+			})
+		}
 		// Use the Azure-compatible messages
-		const response = await chatClient.stream({
-			messages: azureMessages,
-		})
 
 		for await (const chunk of response.stream) {
 			const delta = chunk.getDeltaContent()
@@ -131,10 +146,11 @@ export class SapAiCore implements ApiHandler {
 		}
 	}
 
-	getModel(): { id: string; info: ModelInfo } {
+	getModel(): { id: SapAiCoreModelId; info: ModelInfo } {
+		const modeId = (this.options.sapAiCoreModelId as SapAiCoreModelId) || sapAiCoreDefaultModelId
 		return {
-			id: sapAiCoreDefaultModelId,
-			info: sapAiCoreModels[sapAiCoreDefaultModelId],
+			id: modeId,
+			info: sapAiCoreModels[modeId],
 		}
 	}
 

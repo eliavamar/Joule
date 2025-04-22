@@ -1277,13 +1277,19 @@ const ApiOptions = ({ showModelOptions, apiErrorMessage, modelIdErrorMessage, is
 
 			{selectedProvider === "sap-ai-core" && (
 				<div>
-					<VSCodeTextField
-						value={apiConfiguration?.sapAiCoreModelId || ""}
-						style={{ width: "100%" }}
-						onInput={handleInputChange("sapAiCoreModelId")}
-						placeholder={"e.g. gpt-4"}>
-						<span style={{ fontWeight: 500 }}>Model ID</span>
-					</VSCodeTextField>
+					<DropdownContainer className="dropdown-container">
+						<label htmlFor="sap-ai-core-model">
+							<span style={{ fontWeight: 500 }}>Model ID</span>
+						</label>
+						<VSCodeDropdown
+							id="sap-ai-core-model"
+							value={apiConfiguration?.sapAiCoreModelId || "gpt-4o"}
+							onChange={handleInputChange("sapAiCoreModelId")}
+							style={{ width: "100%" }}>
+							<VSCodeOption value="gpt-4o">gpt-4o</VSCodeOption>
+							<VSCodeOption value="o3-mini">o3-mini</VSCodeOption>
+						</VSCodeDropdown>
+					</DropdownContainer>
 					<VSCodeTextField
 						value={apiConfiguration?.sapClientid || ""}
 						style={{ width: "100%" }}

@@ -2,7 +2,7 @@
 	"name": "joule",
 	"displayName": "Joule",
 	"description": "Autonomous coding agent right in your IDE, capable of creating/editing files, running commands, using the browser, and more with your permission every step of the way.",
-	"version": "1.0.1",
+	"version": "1.0.3",
 	"icon": "assets/icons/icon.png",
 	"engines": {
 		"vscode": "^1.84.0"
@@ -318,7 +318,7 @@
 	},
 	"devDependencies": {
 		"@vscode/vsce": "3.3.2",
-		"@sap-ai-sdk/foundation-models": "1.10.0",
+		"@sap-ai-sdk/foundation-models": "1.12.0",
 		"@changesets/cli": "^2.27.12",
 		"@types/chai": "^5.0.1",
 		"@types/clone-deep": "^4.0.4",

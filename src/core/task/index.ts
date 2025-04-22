@@ -2666,7 +2666,7 @@ export class Task {
 
 								if (this.autoApprovalSettings.enabled && this.autoApprovalSettings.enableNotifications) {
 									showSystemNotification({
-										subtitle: "Cline has a question...",
+										subtitle: "Joule has a question...",
 										message: question.replace(/\n/g, " "),
 									})
 								}

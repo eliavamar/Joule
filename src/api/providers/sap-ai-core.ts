@@ -139,12 +139,33 @@ export class SapAiCore implements ApiHandler {
 
 	private async *llmRequestAICore(model: ModelType, modelInfo: ModelInfo, azureMessages: any[]): ApiStream {
 		const chatClient = new AzureOpenAiChatClient(model.id.trim())
-		const streamOptions =
-			model.id === "o3-mini"
-				? { max_completion_tokens: modelInfo.maxTokens, messages: azureMessages }
-				: { max_tokens: modelInfo.maxTokens, messages: azureMessages }
-
-		const response = await chatClient.stream(streamOptions)
+		let response
+		if (model.id === "o3-mini") {
+			response = await chatClient.stream(
+				{
+					max_completion_tokens: modelInfo.maxTokens,
+					messages: azureMessages,
+				},
+				undefined,
+				{
+					params: {
+						"api-version": "2024-12-01-preview",
+					},
+					maxContentLength: modelInfo.contextWindow,
+				},
+			)
+		} else {
+			response = await chatClient.stream(
+				{
+					max_tokens: modelInfo.maxTokens,
+					messages: azureMessages,
+				},
+				undefined,
+				{
+					maxContentLength: modelInfo.contextWindow,
+				},
+			)
+		}
 
 		for await (const chunk of response.stream) {
 			const delta = chunk.getDeltaContent()

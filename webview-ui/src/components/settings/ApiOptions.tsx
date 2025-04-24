@@ -1290,6 +1290,23 @@ const ApiOptions = ({ showModelOptions, apiErrorMessage, modelIdErrorMessage, is
 							<VSCodeOption value="o3-mini">o3-mini</VSCodeOption>
 						</VSCodeDropdown>
 					</DropdownContainer>
+
+					<div
+						style={{
+							marginTop: "10px",
+							marginBottom: "10px",
+							color: "var(--vscode-descriptionForeground)",
+							fontSize: "11px",
+						}}>
+						<p>
+							Note: BAS Build Code auto-provides access to AI Core credentials. For direct AI Core instance access,
+							add the service credentials to{" "}
+							<span style={{ color: "var(--vscode-errorForeground)", fontFamily: "monospace" }}>
+								~/ai-core-creds.json
+							</span>
+							.
+						</p>
+					</div>
 				</div>
 			)}
 

@@ -1279,7 +1279,7 @@ const ApiOptions = ({ showModelOptions, apiErrorMessage, modelIdErrorMessage, is
 				<div>
 					<DropdownContainer className="dropdown-container">
 						<label htmlFor="sap-ai-core-model">
-							<span style={{ fontWeight: 500 }}>Model ID</span>
+							<span style={{ fontWeight: 500 }}>OpenAI Model ID</span>
 						</label>
 						<VSCodeDropdown
 							id="sap-ai-core-model"
@@ -1290,34 +1290,6 @@ const ApiOptions = ({ showModelOptions, apiErrorMessage, modelIdErrorMessage, is
 							<VSCodeOption value="o3-mini">o3-mini</VSCodeOption>
 						</VSCodeDropdown>
 					</DropdownContainer>
-					<VSCodeTextField
-						value={apiConfiguration?.sapClientid || ""}
-						style={{ width: "100%" }}
-						onInput={handleInputChange("sapClientid")}
-						placeholder={"clientid"}>
-						<span style={{ fontWeight: 500 }}>CLIENT ID</span>
-					</VSCodeTextField>
-					<VSCodeTextField
-						value={apiConfiguration?.sapClientsecret || ""}
-						style={{ width: "100%" }}
-						onInput={handleInputChange("sapClientsecret")}
-						placeholder={"clientsecret"}>
-						<span style={{ fontWeight: 500 }}>CLIENT SECRET</span>
-					</VSCodeTextField>
-					<VSCodeTextField
-						value={apiConfiguration?.sapAuthUrl || ""}
-						style={{ width: "100%" }}
-						onInput={handleInputChange("sapAuthUrl")}
-						placeholder={"https://.authentication.sap.hana.ondemand.com"}>
-						<span style={{ fontWeight: 500 }}>AUTH URL</span>
-					</VSCodeTextField>
-					<VSCodeTextField
-						value={apiConfiguration?.sapApiUrl || ""}
-						style={{ width: "100%" }}
-						onInput={handleInputChange("sapApiUrl")}
-						placeholder={"https://aws.ml.hana.ondemand.com"}>
-						<span style={{ fontWeight: 500 }}>API URL</span>
-					</VSCodeTextField>
 				</div>
 			)}
 

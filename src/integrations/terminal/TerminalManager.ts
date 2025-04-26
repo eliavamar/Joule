@@ -97,7 +97,7 @@ export class TerminalManager {
 	constructor() {
 		let disposable: vscode.Disposable | undefined
 		try {
-			disposable = (vscode.window).onDidStartTerminalShellExecution?.(async (e) => {
+			disposable = vscode.window.onDidStartTerminalShellExecution?.(async (e) => {
 				// Creating a read stream here results in a more consistent output. This is most obvious when running the `date` command.
 				e?.execution?.read()
 			})

@@ -78,15 +78,15 @@ const extensionConfig = {
 				build.onResolve({ filter: /^pkce-challenge$/ }, (args) => {
 					// Instead of trying to directly resolve to a specific file,
 					// let's use the main entry point as defined in the package.json
-					const pkcePackageJson = require('./node_modules/pkce-challenge/package.json');
-					const mainFile = pkcePackageJson.main || 'index.js';
+					const pkcePackageJson = require("./node_modules/pkce-challenge/package.json")
+					const mainFile = pkcePackageJson.main || "index.js"
 
 					return {
-						path: path.resolve(__dirname, 'node_modules/pkce-challenge', mainFile)
-					};
-				});
+						path: path.resolve(__dirname, "node_modules/pkce-challenge", mainFile),
+					}
+				})
 			},
-		}
+		},
 	],
 	entryPoints: ["src/extension.ts"],
 	format: "cjs",

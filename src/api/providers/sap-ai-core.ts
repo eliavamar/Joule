@@ -1,7 +1,7 @@
 import { MessageParam } from "@anthropic-ai/sdk/resources/index.mjs"
-import { CoreMessage } from "ai";
+import { CoreMessage } from "ai"
 
-console.log("SAP AI Core: module loaded");
+console.log("SAP AI Core: module loaded")
 import {
 	AzureOpenAiChatClient,
 	AzureOpenAiChatCompletionRequestMessage,
@@ -11,8 +11,7 @@ import {
 	AzureOpenAiChatCompletionStreamResponse,
 } from "@sap-ai-sdk/foundation-models"
 
-import { OrchestrationClient, LlmModuleConfig, TemplatingModuleConfig, ChatMessages } from '@sap-ai-sdk/orchestration';
-
+import { OrchestrationClient, LlmModuleConfig, TemplatingModuleConfig, ChatMessages } from "@sap-ai-sdk/orchestration"
 
 import { ApiHandler } from ".."
 import { ApiHandlerOptions, ModelInfo, sapAiCoreDefaultModelId, SapAiCoreModelId, sapAiCoreModels } from "../../shared/api"
@@ -119,30 +118,29 @@ export class SapAiCore implements ApiHandler {
 		const chatClient = new AzureOpenAiChatClient(model.id.trim())
 
 		const llm: LlmModuleConfig = {
-			model_name: 'anthropic--claude-3.7-sonnet',
-			model_params: { max_tokens: 10000, temperature: 0.1 }
-		};
+			model_name: "anthropic--claude-3.7-sonnet",
+			model_params: { max_tokens: 10000, temperature: 0.1 },
+		}
 
 		const groundingTemplate = [
 			{
 				role: "system",
 				content: systemPrompt,
-			}
-		];
+			},
+		]
 		const templating: TemplatingModuleConfig = {
-			template: groundingTemplate
-		};
-
+			template: groundingTemplate,
+		}
 
 		try {
 			const orchestrationClient = new OrchestrationClient({
 				llm,
-				templating
-			});
+				templating,
+			})
 			try {
 				const response = await orchestrationClient.stream({
 					messagesHistory: convertCoreMessageToSAPMessages(messages),
-				});
+				})
 				for await (const chunk of response.stream) {
 					const delta = chunk.getDeltaContent()
 					if (delta === null || delta === undefined) {
@@ -155,10 +153,10 @@ export class SapAiCore implements ApiHandler {
 				}
 				// return response.stream.toContentStream();
 			} catch (error: any) {
-				throw error;
+				throw error
 			}
 		} catch (error: any) {
-			throw error;
+			throw error
 		}
 		// //'o3-mini'
 		// const openAImessages = [...convertToOpenAiMessages(messages)]
@@ -242,23 +240,25 @@ const convertCoreMessageToSAPMessages = (messages: MessageParam[]): ChatMessages
 						typeof message.content === "string"
 							? message.content
 							: message.content.map((m) => {
-								if (m.type === "text") {
-									return {
-										...m,
-									};
-								} else if (m.type === "image") {
-									return {
-										type: "image_url",
-										image_url: {
-											url: m.type as string,
-										},
-									};
-								} else {
-									throw new Error(`Unsupported message type: ${m.type}`);
-								}
-							}),
-				};
-			} else {return null;}
+									if (m.type === "text") {
+										return {
+											...m,
+										}
+									} else if (m.type === "image") {
+										return {
+											type: "image_url",
+											image_url: {
+												url: m.type as string,
+											},
+										}
+									} else {
+										throw new Error(`Unsupported message type: ${m.type}`)
+									}
+								}),
+				}
+			} else {
+				return null
+			}
 		})
-		.filter((message) => message !== null) as ChatMessages;
-};
+		.filter((message) => message !== null) as ChatMessages
+}

@@ -80,14 +80,14 @@ export const DropdownContainer = styled.div<{ zIndex?: number }>`
 	}
 `
 
-declare module "vscode" {
-	interface LanguageModelChatSelector {
-		vendor?: string
-		family?: string
-		version?: string
-		id?: string
-	}
-}
+// declare module "vscode" {
+// 	interface LanguageModelChatSelector {
+// 		vendor?: string
+// 		family?: string
+// 		version?: string
+// 		id?: string
+// 	}
+// }
 
 const ApiOptions = ({ showModelOptions, apiErrorMessage, modelIdErrorMessage, isPopup }: ApiOptionsProps) => {
 	const { apiConfiguration, setApiConfiguration, uriScheme } = useExtensionState()

@@ -5,6 +5,10 @@ tmp
 .vscode-test/
 *.vsix
 
+.lh
+.idea
+.history
+
 .DS_Store
 
 pnpm-lock.yaml

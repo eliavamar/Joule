@@ -562,7 +562,7 @@ export class McpHub {
 		)
 	}
 
-	async callTool(serverName: string, toolName: string, toolArguments?: Record<string, unknown>): Promise<McpToolCallResponse> {
+	async callTool(serverName: string, toolName: string, toolArguments?: Record<string, unknown>) {
 		const connection = this.connections.find((conn) => conn.server.name === serverName)
 		if (!connection) {
 			throw new Error(

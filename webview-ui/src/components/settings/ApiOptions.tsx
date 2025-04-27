@@ -1279,13 +1279,14 @@ const ApiOptions = ({ showModelOptions, apiErrorMessage, modelIdErrorMessage, is
 				<div>
 					<DropdownContainer className="dropdown-container">
 						<label htmlFor="sap-ai-core-model">
-							<span style={{ fontWeight: 500 }}>OpenAI Model ID</span>
+							<span style={{ fontWeight: 500 }}>AI Core Model ID</span>
 						</label>
 						<VSCodeDropdown
 							id="sap-ai-core-model"
-							value={apiConfiguration?.sapAiCoreModelId || "gpt-4o"}
+							value={apiConfiguration?.sapAiCoreModelId}
 							onChange={handleInputChange("sapAiCoreModelId")}
 							style={{ width: "100%" }}>
+							<VSCodeOption value="">Select a model...</VSCodeOption>
 							<VSCodeOption value="gpt-4o">gpt-4o</VSCodeOption>
 							<VSCodeOption value="o3-mini">o3-mini</VSCodeOption>
 						</VSCodeDropdown>
@@ -1306,6 +1307,23 @@ const ApiOptions = ({ showModelOptions, apiErrorMessage, modelIdErrorMessage, is
 							</span>
 							.
 						</p>
+						<pre
+							style={{
+								background: "var(--vscode-editor-background)",
+								padding: "10px",
+								borderRadius: "3px",
+								overflowX: "auto",
+								marginTop: "5px",
+							}}>
+							{`{
+    "clientid": "id",
+    "clientsecret": "secret",
+    "url": "https://authentication.sap.hana.ondemand.com",
+    "serviceurls": {
+        "AI_API_URL": "https://aws.ml.hana.ondemand.com"
+    }
+}`}
+						</pre>
 					</div>
 				</div>
 			)}
@@ -1833,5 +1851,4 @@ export function normalizeApiConfiguration(apiConfiguration?: ApiConfiguration): 
 			return getProviderData(anthropicModels, anthropicDefaultModelId)
 	}
 }
-
 export default memo(ApiOptions)

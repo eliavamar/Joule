@@ -234,8 +234,34 @@ export class SapAiCore implements ApiHandler {
 		}
 
 		const fileContents = fs.readFileSync(credsFilePath, "utf-8")
-		const parsed = JSON.parse(fileContents)
-		return JSON.stringify(parsed)
+		try {
+			const parsed = JSON.parse(fileContents)
+
+			// Check and report missing credentials
+			const missingCredentials = []
+			if (!parsed.clientid) {
+				missingCredentials.push("clientid")
+			}
+			if (!parsed.clientsecret) {
+				missingCredentials.push("clientsecret")
+			}
+			if (!parsed.url) {
+				missingCredentials.push("url")
+			}
+			if (!parsed.serviceurls) {
+				missingCredentials.push("serviceurls")
+			} else if (!parsed.serviceurls.AI_API_URL) {
+				missingCredentials.push("serviceurls.AI_API_URL")
+			}
+
+			if (missingCredentials.length > 0) {
+				throw new Error(`Credentials file is missing required properties: ${missingCredentials.join(", ")}`)
+			}
+
+			return JSON.stringify(parsed)
+		} catch (e) {
+			throw new Error("Failed to parse ai core credentials file:", e)
+		}
 	}
 
 	setupAiCore(): void {

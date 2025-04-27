@@ -13,13 +13,24 @@ import { ApiStream } from "../transform/stream"
 import { withRetry } from "../retry"
 import { convertToOpenAiMessages } from "../transform/openai-format"
 import OpenAI from "openai"
+import { devspace } from "@sap/bas-sdk"
+import { BASLLMProxy } from "../../utils/ai-core/bas-llm-proxy"
+import { Logger } from "../../services/logging/Logger"
+import fs from "fs"
+import path from "path"
+import os from "os"
+
+const AI_CORE_CREDS_FILENAME = "ai-core-creds.json"
+
+type ModelType = { id: SapAiCoreModelId; info: ModelInfo }
 
 export class SapAiCore implements ApiHandler {
 	private options: ApiHandlerOptions
+	private basLLMProxy: BASLLMProxy | undefined
 
 	constructor(options: ApiHandlerOptions) {
 		this.options = options
-		this.setupAiCoreEnvVariable()
+		this.setupAiCore()
 	}
 
 	/**
@@ -109,9 +120,8 @@ export class SapAiCore implements ApiHandler {
 	async *createMessage(systemPrompt: string, messages: MessageParam[]): ApiStream {
 		const model = this.getModel()
 		const modelInfo = model.info
-		const chatClient = new AzureOpenAiChatClient(model.id.trim())
+
 		// Convert to OpenAI format first
-		//'o3-mini'
 		const openAImessages = [...convertToOpenAiMessages(messages)]
 		// Then convert to Azure OpenAI format
 		const azureSystemMessages: AzureOpenAiChatCompletionRequestSystemMessage = {
@@ -120,6 +130,15 @@ export class SapAiCore implements ApiHandler {
 		}
 		const azureMessages = [azureSystemMessages, ...this.convertToAICoreOpenAiMessages(openAImessages)]
 
+		if (process.env["AICORE_SERVICE_KEY"]) {
+			yield* this.llmRequestAICore(model, modelInfo, azureMessages)
+		} else {
+			yield* this.llmRequestBASProxy(model, azureMessages)
+		}
+	}
+
+	private async *llmRequestAICore(model: ModelType, modelInfo: ModelInfo, azureMessages: any[]): ApiStream {
+		const chatClient = new AzureOpenAiChatClient(model.id.trim())
 		let response
 		if (model.id === "o3-mini") {
 			response = await chatClient.stream(
@@ -147,16 +166,54 @@ export class SapAiCore implements ApiHandler {
 				},
 			)
 		}
-		// Use the Azure-compatible messages
 
 		for await (const chunk of response.stream) {
 			const delta = chunk.getDeltaContent()
-			if (delta === null || delta === undefined) {
-				continue
+			if (delta) {
+				yield {
+					type: "text",
+					text: delta,
+				}
 			}
-			yield {
-				type: "text",
-				text: delta,
+		}
+	}
+
+	private async *llmRequestBASProxy(model: ModelType, azureMessages: any[]): ApiStream {
+		const payload = {
+			messages: azureMessages,
+			stream: true,
+		}
+
+		const response = await this.basLLMProxy?.requestCompletion(model.id, payload)
+
+		if (!response) {
+			return
+		}
+
+		const rl = require("readline").createInterface({
+			input: response,
+			crlfDelay: Infinity,
+		})
+
+		for await (const line of rl) {
+			if (line.startsWith("data: ")) {
+				const data = line.slice(6).trim()
+				if (data === "[DONE]") {
+					break
+				}
+
+				try {
+					const parsed = JSON.parse(data)
+					const delta = parsed?.choices?.[0]?.delta?.content
+					if (delta) {
+						yield {
+							type: "text",
+							text: delta,
+						}
+					}
+				} catch (err) {
+					console.error("Error parsing streamed chunk:", err)
+				}
 			}
 		}
 	}
@@ -169,15 +226,64 @@ export class SapAiCore implements ApiHandler {
 		}
 	}
 
-	setupAiCoreEnvVariable(): void {
-		const aiCoreServiceCredentials = {
-			clientid: this.options.sapClientid,
-			clientsecret: this.options.sapClientsecret,
-			url: this.options.sapAuthUrl,
-			serviceurls: {
-				AI_API_URL: this.options.sapApiUrl,
-			},
+	loadAiCoreCredentials(): string | undefined {
+		const credsFilePath = path.join(os.homedir(), AI_CORE_CREDS_FILENAME)
+
+		if (!fs.existsSync(credsFilePath)) {
+			return undefined
 		}
-		process.env["AICORE_SERVICE_KEY"] = JSON.stringify(aiCoreServiceCredentials)
+
+		const fileContents = fs.readFileSync(credsFilePath, "utf-8")
+		try {
+			const parsed = JSON.parse(fileContents)
+
+			// Check and report missing credentials
+			const missingCredentials = []
+			if (!parsed.clientid) {
+				missingCredentials.push("clientid")
+			}
+			if (!parsed.clientsecret) {
+				missingCredentials.push("clientsecret")
+			}
+			if (!parsed.url) {
+				missingCredentials.push("url")
+			}
+			if (!parsed.serviceurls) {
+				missingCredentials.push("serviceurls")
+			} else if (!parsed.serviceurls.AI_API_URL) {
+				missingCredentials.push("serviceurls.AI_API_URL")
+			}
+
+			if (missingCredentials.length > 0) {
+				throw new Error(`Credentials file is missing required properties: ${missingCredentials.join(", ")}`)
+			}
+
+			return JSON.stringify(parsed)
+		} catch (e) {
+			throw new Error("Failed to parse ai core credentials file:", e)
+		}
+	}
+
+	setupAiCore(): void {
+		let creds: string | undefined
+
+		try {
+			creds = this.loadAiCoreCredentials()
+		} catch (err) {
+			Logger.log(`Failed to load AI Core credentials: ${err}`)
+		}
+
+		if (creds) {
+			process.env["AICORE_SERVICE_KEY"] = creds
+			Logger.log(`AI Core service credentials loaded successfully from file ~/${AI_CORE_CREDS_FILENAME}.`)
+		} else if (devspace.isBuildCode()) {
+			Logger.log("AI Core credentials missing. Falling back to BAS Proxy LLM AI Core setup.")
+			this.basLLMProxy = new BASLLMProxy()
+			this.basLLMProxy.getDeployments()
+		} else {
+			Logger.log(
+				`AI Core setup failed. Please check the credentials file ~/${AI_CORE_CREDS_FILENAME} or ensure working in BAS BuildCode.`,
+			)
+		}
 	}
 }

@@ -1288,6 +1288,7 @@ const ApiOptions = ({ showModelOptions, apiErrorMessage, modelIdErrorMessage, is
 							style={{ width: "100%" }}>
 							<VSCodeOption value="gpt-4o">gpt-4o</VSCodeOption>
 							<VSCodeOption value="o3-mini">o3-mini</VSCodeOption>
+							<VSCodeOption value="anthropic--claude-3.7-sonnet">anthropic--claude-3.7-sonnet</VSCodeOption>
 						</VSCodeDropdown>
 					</DropdownContainer>
 					<VSCodeTextField

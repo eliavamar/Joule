@@ -1270,6 +1270,14 @@ export const sapAiCoreModels = {
 		outputPrice: 0.0,
 		cacheReadsPrice: 0.0,
 	},
+	"anthropic--claude-3.7-sonnet": {
+		maxTokens: 8192,
+		contextWindow: 200_000,
+		supportsImages: false,
+		supportsPromptCache: false,
+		inputPrice: 0.0,
+		outputPrice: 0.0,
+	},
 }
 // AskSage Models
 // https://docs.asksage.ai/

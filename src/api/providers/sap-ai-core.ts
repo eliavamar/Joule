@@ -43,7 +43,7 @@ export class SapAiCore implements ApiHandler {
 			model_name: model.id,
 			// add model_params only for Anthropic models
 			...(model.id.includes("anthropic") && {
-				model_params: { max_tokens: 4096 },
+				model_params: { max_tokens: 8192 },
 			}),
 		}
 

@@ -1279,47 +1279,54 @@ const ApiOptions = ({ showModelOptions, apiErrorMessage, modelIdErrorMessage, is
 				<div>
 					<DropdownContainer className="dropdown-container">
 						<label htmlFor="sap-ai-core-model">
-							<span style={{ fontWeight: 500 }}>Model ID</span>
+							<span style={{ fontWeight: 500 }}>AI Core Model ID</span>
 						</label>
 						<VSCodeDropdown
 							id="sap-ai-core-model"
-							value={apiConfiguration?.sapAiCoreModelId || "gpt-4o"}
+							value={apiConfiguration?.sapAiCoreModelId}
 							onChange={handleInputChange("sapAiCoreModelId")}
 							style={{ width: "100%" }}>
+							<VSCodeOption value="">Select a model...</VSCodeOption>
 							<VSCodeOption value="gpt-4o">gpt-4o</VSCodeOption>
 							<VSCodeOption value="o3-mini">o3-mini</VSCodeOption>
 							<VSCodeOption value="anthropic--claude-3.5-sonnet">anthropic--claude-3.5-sonnet</VSCodeOption>
 							<VSCodeOption value="anthropic--claude-3.7-sonnet">anthropic--claude-3.7-sonnet</VSCodeOption>
 						</VSCodeDropdown>
 					</DropdownContainer>
-					<VSCodeTextField
-						value={apiConfiguration?.sapClientid || ""}
-						style={{ width: "100%" }}
-						onInput={handleInputChange("sapClientid")}
-						placeholder={"clientid"}>
-						<span style={{ fontWeight: 500 }}>CLIENT ID</span>
-					</VSCodeTextField>
-					<VSCodeTextField
-						value={apiConfiguration?.sapClientsecret || ""}
-						style={{ width: "100%" }}
-						onInput={handleInputChange("sapClientsecret")}
-						placeholder={"clientsecret"}>
-						<span style={{ fontWeight: 500 }}>CLIENT SECRET</span>
-					</VSCodeTextField>
-					<VSCodeTextField
-						value={apiConfiguration?.sapAuthUrl || ""}
-						style={{ width: "100%" }}
-						onInput={handleInputChange("sapAuthUrl")}
-						placeholder={"https://.authentication.sap.hana.ondemand.com"}>
-						<span style={{ fontWeight: 500 }}>AUTH URL</span>
-					</VSCodeTextField>
-					<VSCodeTextField
-						value={apiConfiguration?.sapApiUrl || ""}
-						style={{ width: "100%" }}
-						onInput={handleInputChange("sapApiUrl")}
-						placeholder={"https://aws.ml.hana.ondemand.com"}>
-						<span style={{ fontWeight: 500 }}>API URL</span>
-					</VSCodeTextField>
+
+					<div
+						style={{
+							marginTop: "10px",
+							marginBottom: "10px",
+							color: "var(--vscode-descriptionForeground)",
+							fontSize: "11px",
+						}}>
+						<p>
+							Note: BAS Build Code auto-provides access to AI Core credentials. For direct AI Core instance access,
+							add the service credentials to{" "}
+							<span style={{ color: "var(--vscode-errorForeground)", fontFamily: "monospace" }}>
+								~/ai-core-creds.json
+							</span>
+							.
+						</p>
+						<pre
+							style={{
+								background: "var(--vscode-editor-background)",
+								padding: "10px",
+								borderRadius: "3px",
+								overflowX: "auto",
+								marginTop: "5px",
+							}}>
+							{`{
+    "clientid": "id",
+    "clientsecret": "secret",
+    "url": "https://authentication.sap.hana.ondemand.com",
+    "serviceurls": {
+        "AI_API_URL": "https://aws.ml.hana.ondemand.com"
+    }
+}`}
+						</pre>
+					</div>
 				</div>
 			)}
 
@@ -1846,5 +1853,4 @@ export function normalizeApiConfiguration(apiConfiguration?: ApiConfiguration): 
 			return getProviderData(anthropicModels, anthropicDefaultModelId)
 	}
 }
-
 export default memo(ApiOptions)
